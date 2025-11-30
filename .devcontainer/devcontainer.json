@@ -1,7 +1,7 @@
 {
   "name": "FastAPI Hotel - Codespace",
   "dockerComposeFile": "../docker-compose.yml",
-  "service": "app",
+  "service": "api",
   "workspaceFolder": "/workspace",
   "shutdownAction": "stopCompose",
   "forwardPorts": [8000],
@@ -15,3 +15,4 @@
     }
   }
 }
+
