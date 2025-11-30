@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hotel API Frontend</title>
+    <style>
+      /* Reset básico */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #1c1c1c;
+        color: #f0f0f0;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+        color: #e63946;
+        margin-bottom: 30px;
+      }
+
+      h2,
+      h3 {
+        color: #f1faee;
+        margin-top: 25px;
+      }
+
+      button {
+        border-color: #e63946;
+        background: #f5f5f560;
+        color: #fff;
+        border: none;
+        padding: 8px 15px;
+        margin: 5px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #a4161a;
+        transform: scale(1.05);
+      }
+
+      input,
+      select {
+        padding: 6px 10px;
+        margin: 5px;
+        border-radius: 5px;
+        border: 1px solid #444;
+        background-color: #2b2b2b;
+        color: #fff;
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      th,
+      td {
+        border: 1px solid #444;
+        padding: 8px 12px;
+        text-align: left;
+        transition: all 0.2s ease;
+      }
+
+      th {
+        background-color: #e6394630;
+        color: #fff;
+        text-align: center;
+      }
+
+      td {
+        background-color: #2b2b2b;
+      }
+
+      tr:hover td {
+        background-color: #3a3a3a;
+      }
+
+      /* Animación sutil para tablas */
+      tbody tr {
+        transform: translateY(0);
+        transition: transform 0.3s ease;
+      }
+
+      tbody tr:nth-child(even) td {
+        background-color: #262626;
+      }
+
+      tbody tr:hover {
+        transform: translateX(5px);
+      }
+
+      input:focus,
+      select:focus {
+        outline: 2px solid #e63946;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: auto;
+      }
+
+      .section {
+        margin-bottom: 40px;
+        padding: 15px;
+        background-color: #2b2b2b;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(230, 57, 70, 0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Hotel API - Frontend</h1>
+
+      <div class="section">
+        <h2>Habitaciones</h2>
+        <button onclick="listarHabitaciones()">Listar Habitaciones</button>
+        <table id="tablaHabitaciones">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tipo</th>
+              <th>Precio</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+
+        <h3>Actualizar Estado</h3>
+        <input type="number" id="habIdEstado" placeholder="ID Habitación" />
+        <select id="nuevoEstado">
+          <option value="libre">Libre</option>
+          <option value="ocupada">Ocupada</option>
+          <option value="mantenimiento">Mantenimiento</option>
+        </select>
+        <button onclick="cambiarEstado()">Actualizar</button>
+
+        <h3>Crear Habitación</h3>
+        <input type="number" id="habIdCrear" placeholder="ID" />
+        <input type="text" id="habTipoCrear" placeholder="Tipo" />
+        <input type="number" id="habPrecioCrear" placeholder="Precio" />
+        <input type="text" id="rolCrearHab" placeholder="Rol Usuario" />
+        <button onclick="crearHabitacion()">Crear</button>
+      </div>
+
+      <div class="section">
+        <h2>Usuarios</h2>
+        <button onclick="listarUsuarios()">Listar Usuarios</button>
+        <table id="tablaUsuarios">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Rol</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+
+        <h3>Crear Usuario</h3>
+        <input type="number" id="userIdCrear" placeholder="ID" />
+        <input type="text" id="userNombreCrear" placeholder="Nombre" />
+        <input type="text" id="userRolCrear" placeholder="Rol" />
+        <button onclick="crearUsuario()">Crear</button>
+      </div>
+    </div>
+
+    <script>
+      const baseUrl = "http://localhost:8000";
+
+      async function listarHabitaciones() {
+        const res = await fetch(`${baseUrl}/habitaciones`);
+        const data = await res.json();
+        const tbody = document.querySelector("#tablaHabitaciones tbody");
+        tbody.innerHTML = "";
+        data.forEach((h) => {
+          tbody.innerHTML += `<tr>
+                    <td>${h.id}</td>
+                    <td>${h.tipo}</td>
+                    <td>${h.precio}</td>
+                    <td>${h.estado}</td>
+                </tr>`;
+        });
+      }
+
+      async function cambiarEstado() {
+        const id = document.getElementById("habIdEstado").value;
+        const estado = document.getElementById("nuevoEstado").value;
+        const res = await fetch(
+          `${baseUrl}/habitaciones/${id}/estado?nuevo_estado=${estado}`,
+          { method: "PUT" }
+        );
+        const data = await res.json();
+        alert(JSON.stringify(data));
+        listarHabitaciones();
+      }
+
+      async function crearHabitacion() {
+        const id = document.getElementById("habIdCrear").value;
+        const tipo = document.getElementById("habTipoCrear").value;
+        const precio = document.getElementById("habPrecioCrear").value;
+        const rol = document.getElementById("rolCrearHab").value;
+        const res = await fetch(
+          `${baseUrl}/habitaciones?id=${id}&tipo=${tipo}&precio=${precio}&rol_usuario=${rol}`,
+          { method: "POST" }
+        );
+        const data = await res.json();
+        alert(JSON.stringify(data));
+        listarHabitaciones();
+      }
+
+      async function listarUsuarios() {
+        const res = await fetch(`${baseUrl}/usuarios`);
+        const data = await res.json();
+        const tbody = document.querySelector("#tablaUsuarios tbody");
+        tbody.innerHTML = "";
+        data.forEach((u) => {
+          tbody.innerHTML += `<tr>
+                    <td>${u.id}</td>
+                    <td>${u.nombre}</td>
+                    <td>${u.rol}</td>
+                </tr>`;
+        });
+      }
+
+      async function crearUsuario() {
+        const id = document.getElementById("userIdCrear").value;
+        const nombre = document.getElementById("userNombreCrear").value;
+        const rol = document.getElementById("userRolCrear").value;
+        const res = await fetch(
+          `${baseUrl}/usuarios?id=${id}&nombre=${nombre}&rol=${rol}`,
+          { method: "POST" }
+        );
+        const data = await res.json();
+        alert(JSON.stringify(data));
+        listarUsuarios();
+      }
+    </script>
+  </body>
+</html>

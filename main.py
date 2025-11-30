@@ -1,7 +1,19 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from typing import Optional
 
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="frontend"), name="frontend")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Datos quemados
 
@@ -70,9 +82,6 @@ def crear_habitacion(id: int, tipo: str, precio: int, rol_usuario: str):
 
     return {"message": "Habitación creada", "habitacion": nueva}
 
-
-
-
 @app.patch("/habitaciones/{id_h}")
 def actualizar_parcial(id_h: int, tipo: Optional[str] = None, precio: Optional[int] = None, estado: Optional[str] = None):
     hab = next((h for h in habitaciones if h["id"] == id_h), None)
@@ -92,6 +101,16 @@ def actualizar_parcial(id_h: int, tipo: Optional[str] = None, precio: Optional[i
 
     return {"message": "Cambios aplicados", "habitacion": hab}
 
+@app.get("/usuarios")
+def listar_usuarios():
+    return usuarios
+
+@app.get("/usuarios/{id_u}")
+def obtener_usuario(id_u: int):
+    user = next((u for u in usuarios if u["id"] == id_u), None)
+    if not user:
+        raise HTTPException(404, "Usuario no encontrado")
+    return user
 
 @app.post("/usuarios")
 def crear_usuario(id: int, nombre: str, rol: str):
@@ -108,7 +127,6 @@ def crear_usuario(id: int, nombre: str, rol: str):
 
     return {"message": "Usuario creado", "usuario": nuevo}
 
-
 @app.put("/usuarios/{id_u}")
 def actualizar_usuario(id_u: int, nombre: str, rol: str):
     user = next((u for u in usuarios if u["id"] == id_u), None)
@@ -123,7 +141,6 @@ def actualizar_usuario(id_u: int, nombre: str, rol: str):
     user["rol"] = rol
 
     return {"message": "Usuario actualizado", "usuario": user}
-
 
 @app.patch("/usuarios/{id_u}")
 def actualizar_usuario_parcial(id_u: int, nombre: Optional[str] = None, rol: Optional[str] = None):
@@ -142,7 +159,6 @@ def actualizar_usuario_parcial(id_u: int, nombre: Optional[str] = None, rol: Opt
         user["rol"] = rol
 
     return {"message": "Cambios aplicados", "usuario": user}
-
 
 @app.delete("/usuarios/{id_u}")
 def eliminar_usuario(id_u: int):
