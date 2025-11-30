@@ -1,0 +1,43 @@
+# Entornos virtuales
+venv/
+env/
+ENV/
+
+# Archivos compilados de Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+
+# Logs
+*.log
+
+# Config VSCode
+.vscode/
+
+# Archivos temporales
+*.tmp
+*.swp
+*.swo
+
+# Carpetas de sistema
+.DS_Store
+Thumbs.db
+
+# Pytest Cache
+.pytest_cache/
+
+# Mypy
+.mypy_cache/
+
+# Coverage
+htmlcov/
+.coverage
+.coverage.*
+
+# Cache de pip
+pip-wheel-metadata/
+*.egg-info/
+.eggs/
+

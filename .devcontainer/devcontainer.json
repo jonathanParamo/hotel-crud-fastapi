@@ -1,0 +1,17 @@
+{
+  "name": "FastAPI Hotel - Codespace",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "forwardPorts": [8000],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-azuredevops.azure-devops"
+      ]
+    }
+  }
+}
